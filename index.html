@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>包版文件製作</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <!-- Navbar wrapper -->
+    <div class="sticky-top" style="z-index:1020;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">包版文件製作</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#mantis-input">Mantis訊息輸入</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#packing-result">包版結果</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#file-count">檔案統計</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dropdown(無功能)
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">無功能</a></li>
+                                <li><a class="dropdown-item" href="#">無功能</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#">無功能</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Alert 緊跟 Navbar 下方 -->
+        <div class="alert alert-danger text-center m-0 p-1">
+            <p class="m-0 fw-bold">目前統計結果會排除包含:"Working tree changes"字眼的Message和檔案!</p>
+        </div>
+    </div>
+
+    <div class="container my-4">
+        <div class="d-flex flex-column gap-3">
+            <!-- Mantis訊息輸入 -->
+            <div id="mantis-input" class="flex-grow-1">
+                <h2>Mantis訊息輸入</h2>
+                <p>請貼上所有git的Message(輸出以倒序排出)</p>
+                <h5>【Git Message】</h5>
+                <textarea class="form-control" id="gitMessageInput" rows="13" placeholder="貼上Git Message"></textarea>
+            </div>
+            <!-- 按鈕 -->
+            <div class="d-flex flex-row justify-content-center gap-3">
+                <button class="btn btn-secondary mb-2" id="resetButton">清除</button>
+                <button class="btn btn-outline-success mb-2" id="countButton">統計</button>
+                <button class="btn btn-primary mb-2" id="countWithoutMergeButton">統計(排除Merge訊息和檔案)</button>
+            </div>
+            <!-- 包版結果 -->
+            <div id="packing-result" class="flex-grow-1">
+                <h5 class="form-label">【包版結果】</h5>
+                <div class="d-flex align-items-center mb-2 gap-2">
+                    <label class="form-label mb-0" id="mantisCountLabel">Mantis單量(排除重複):</label>
+                    <input type="text" class="form-control" style="width: 100px;" id="mantisCount" readonly/>
+                    <label class="form-label mb-0" id="repeatCountLabel">重複數量:</label>
+                    <input type="text" class="form-control" style="width: 100px;" id="repeatCount" readonly/>
+                </div>
+                <div>
+                    <label class="form-label mb-0" id="finalResultLabel">最終結果(倒序):</label>
+                    <textarea class="form-control" id="finalResult"  rows="10" placeholder="包版最終結果(倒序)" readonly></textarea>
+                </div>
+            </div>
+            <!-- 檔案統計 -->
+            <div id="file-count" class="flex-grow-1">
+                <h5 class="form-label">【檔案統計】</h5>
+                <div class="d-flex align-items-center mb-2 gap-2">
+                    <label class="form-label mb-0" id="fileCountLabel">檔案統計數量(排除重複):</label>
+                    <input type="text" class="form-control" style="width: 100px;" id="fileCount" readonly/>
+                    <label class="form-label mb-0" id="modifiedCountLabel">修改數量:</label>
+                    <input type="text" class="form-control" style="width: 100px;" id="modifiedCount" readonly/>
+                    <label class="form-label mb-0" id="addedCountLabel">新增數量:</label>
+                    <input type="text" class="form-control" style="width: 100px;" id="addedCount" readonly/>
+                    <label class="form-label mb-0" id="deletedCountLabel">刪除數量:</label>
+                    <input type="text" class="form-control" style="width: 100px;" id="deletedCount" readonly/>
+                </div>
+                <div>
+                    <label class="form-label mb-0" id="fileResultLabel">最終結果(倒序):</label>
+                    <textarea class="form-control" id="fileResult"  rows="10" placeholder="檔案統計最終結果(倒序)" readonly></textarea>
+                </div>
+                <div>
+                    <label class="form-label mb-0" id="modifiedResultLabel">修改檔案(倒序):</label>
+                    <textarea class="form-control" id="modifiedResult"  rows="10" placeholder="修改檔案最終結果(倒序)" readonly></textarea>
+                </div>
+                <div>
+                    <label class="form-label mb-0" id="addedResultLabel">新增檔案(倒序):</label>
+                    <textarea class="form-control" id="addedResult"  rows="10" placeholder="新增檔案最終結果(倒序)" readonly></textarea>
+                </div>
+                <div>
+                    <label class="form-label mb-0" id="deletedResultLabel">刪除檔案(倒序):</label>
+                    <textarea class="form-control" id="deletedResult"  rows="10" placeholder="刪除檔案最終結果(倒序)" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-black text-zinc-50 w-full text-center mt-3 px-2 md:text-sm text-xs text-light">
+        <div class="py-2">
+            <small class="lastModifiedDate text-center">Update: 2025.09.22</small><br/>
+            <small>&copy;2024 <a class="text-center navbar-link" href="https://poyu105.github.io/myweb" target="_blank">Poyu webDev.</a></small>
+            <span>
+                <a class="m-1 navbar-link" href="https://github.com/poyu105" target="_blank"><i class="bi bi-github"></i></a>
+            </span>
+            <span>
+                <a class="m-1 navbar-link" href="https://www.instagram.com/ch_03105?igsh=Z2oxNDQ4MHZ5dm53&utm_source=qr" target="_blank"><i class="bi bi-instagram"></i></a>
+            </span>
+            <span>
+                <a class="m-1 navbar-link" href="https://www.facebook.com/profile.php?id=100015264487352" target="_blank"><i class="bi bi-facebook"></i></a>
+            </span><br/>
+            <small>本網頁所用之圖片、資訊皆為製作個人作品使用，非商業營利用途，如有冒犯，請郵件: <a class="text-center navbar-link" href="mailto:chen06115@gmail.com">chen06115@gmail.com (點擊開啟)</a>，收到後將盡速下架!</small>
+        </div>
+    </footer>
+</body>
+<style>
+    .navbar-link {
+        color: #fff; /* 白色 */
+        text-decoration: none;
+    }
+
+    .navbar-link:hover {
+        color: #d4d4d4; /* 淺灰色 */
+        text-decoration: none; /* 取消下劃線，如果不想要 */
+    }
+</style>
+<script src="index.js"></script>
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+</html>
