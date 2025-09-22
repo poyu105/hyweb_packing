@@ -57,18 +57,15 @@
             <div id="mantis-input" class="flex-grow-1">
                 <h2>Mantis訊息輸入</h2>
                 <p>請貼上所有git的Message(輸出以倒序排出)</p>
-                <h5>【Git Message】</h5>
+                <h5 class="d-inline">【1. Git Message】</h5>
+                <button class="btn btn-secondary mb-2" id="resetButton">清除</button>
                 <textarea class="form-control" id="gitMessageInput" rows="13" placeholder="貼上Git Message"></textarea>
             </div>
-            <!-- 按鈕 -->
-            <div class="d-flex flex-row justify-content-center gap-3">
-                <button class="btn btn-secondary mb-2" id="resetButton">清除</button>
-                <button class="btn btn-outline-success mb-2" id="countButton">統計</button>
-                <button class="btn btn-primary mb-2" id="countWithoutMergeButton">統計(排除Merge訊息和檔案)</button>
-            </div>
+            <hr/>
             <!-- 包版結果 -->
             <div id="packing-result" class="flex-grow-1">
-                <h5 class="form-label">【包版結果】</h5>
+                <h5 class="form-label d-inline">【2. 包版結果】</h5>
+                <button class="btn btn-primary mb-2" id="countWithoutMergeButton">統計(排除Merge)</button>
                 <div class="d-flex align-items-center mb-2 gap-2">
                     <label class="form-label mb-0" id="mantisCountLabel">Mantis單量(排除重複):</label>
                     <input type="text" class="form-control" style="width: 100px;" id="mantisCount" readonly/>
@@ -80,34 +77,91 @@
                     <textarea class="form-control" id="finalResult"  rows="10" placeholder="包版最終結果(倒序)" readonly></textarea>
                 </div>
             </div>
+            <hr/>
             <!-- 檔案統計 -->
             <div id="file-count" class="flex-grow-1">
-                <h5 class="form-label">【檔案統計】</h5>
-                <div class="d-flex align-items-center mb-2 gap-2">
-                    <label class="form-label mb-0" id="fileCountLabel">檔案統計數量(排除重複):</label>
-                    <input type="text" class="form-control" style="width: 100px;" id="fileCount" readonly/>
-                    <label class="form-label mb-0" id="modifiedCountLabel">修改數量:</label>
-                    <input type="text" class="form-control" style="width: 100px;" id="modifiedCount" readonly/>
-                    <label class="form-label mb-0" id="addedCountLabel">新增數量:</label>
-                    <input type="text" class="form-control" style="width: 100px;" id="addedCount" readonly/>
-                    <label class="form-label mb-0" id="deletedCountLabel">刪除數量:</label>
-                    <input type="text" class="form-control" style="width: 100px;" id="deletedCount" readonly/>
+                <h5 class="form-label d-inline">【3. 檔案統計<small>(僅供參考)</small>】</h5>
+                <button class="btn btn-primary mb-2" id="countAllMergeButton">統計(全部、排重)</button>
+                <button class="btn btn-primary mb-2" id="countWithoutMergeAndRepeatButton">統計(排除Merge、排重)</button>
+                <div class="d-flex flex-column mb-2 gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0" id="fileCountLabel">檔案統計數量(排除重複):</label>
+                        <input type="text" class="form-control" style="width: 100px;" id="fileCount" readonly/>
+                        <label class="form-label mb-0" id="fileRepeatCountLabel">重複數量:</label>
+                        <input type="text" class="form-control" style="width: 100px;" id="fileRepeatCount" readonly/>
+                        <label class="form-label mb-0" id="mergeFileCountLabel">Merge檔案數量:</label>
+                        <input type="text" class="form-control" style="width: 100px;" id="mergeFileCount" readonly/>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="form-label mb-0" id="modifiedCountLabel">修改數量:</label>
+                        <input type="text" class="form-control" style="width: 100px;" id="modifiedCount" readonly/>
+                        <label class="form-label mb-0" id="addedCountLabel">新增數量:</label>
+                        <input type="text" class="form-control" style="width: 100px;" id="addedCount" readonly/>
+                        <label class="form-label mb-0" id="deletedCountLabel">刪除數量:</label>
+                        <input type="text" class="form-control" style="width: 100px;" id="deletedCount" readonly/>
+                    </div>
                 </div>
-                <div>
-                    <label class="form-label mb-0" id="fileResultLabel">最終結果(倒序):</label>
+                <div class="mb-3">
+                    <label class="form-label mb-0 fw-bold" id="fileResultLabel">最終結果(倒序):</label>
                     <textarea class="form-control" id="fileResult"  rows="10" placeholder="檔案統計最終結果(倒序)" readonly></textarea>
                 </div>
-                <div>
-                    <label class="form-label mb-0" id="modifiedResultLabel">修改檔案(倒序):</label>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="col-5">
+                        <label class="form-label mb-0 fw-bold" id="fileRepeatResultLabel">重複檔案(倒序):</label>
+                        <textarea class="form-control" id="fileRepeatResult"  rows="10" placeholder="修改檔案最終結果(倒序)" readonly></textarea>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label mb-0 fw-bold" id="mergeFileResultLabel">Merge檔案(倒序):</label>
+                        <textarea class="form-control" id="mergeFileResult"  rows="10" placeholder="修改檔案最終結果(倒序)" readonly></textarea>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label mb-0 fw-bold" id="modifiedResultLabel">修改檔案(倒序):</label>
                     <textarea class="form-control" id="modifiedResult"  rows="10" placeholder="修改檔案最終結果(倒序)" readonly></textarea>
                 </div>
-                <div>
-                    <label class="form-label mb-0" id="addedResultLabel">新增檔案(倒序):</label>
+                <div class="mb-3">
+                    <label class="form-label mb-0 fw-bold" id="addedResultLabel">新增檔案(倒序):</label>
                     <textarea class="form-control" id="addedResult"  rows="10" placeholder="新增檔案最終結果(倒序)" readonly></textarea>
                 </div>
                 <div>
-                    <label class="form-label mb-0" id="deletedResultLabel">刪除檔案(倒序):</label>
+                    <label class="form-label mb-0 fw-bold" id="deletedResultLabel">刪除檔案(倒序):</label>
                     <textarea class="form-control" id="deletedResult"  rows="10" placeholder="刪除檔案最終結果(倒序)" readonly></textarea>
+                </div>
+            </div>
+            <hr/>
+            <!-- 檔案對照 -->
+            <div id="file-compare" class="flex-grow-1">
+                <h5 class="form-label d-inline">【4. 檔案對照】</h5>
+                <button class="btn btn-secondary mb-2" id="resetCompareButton">清除</button>
+                <button class="btn btn-danger mb-2" id="excludeRepeatButton">排重</button>
+                <button class="btn btn-outline-success mb-2" id="compareButton">比較(請先點擊排重)</button>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="col-5">
+                        <label class="form-label mb-0 fw-bold d-block" id="fileFromDocLabel">所有檔案(異動申請單):</label>
+                        <label class="form-label mb-0" id="fileFromDocCountLabel">檔案數量:</label>
+                        <input type="text" class="form-control d-inline p-0 mb-1 text-center" style="width: 100px;" id="fileFromDocCount" readonly/>
+                        <textarea class="form-control" id="fileFromDoc"  rows="10" placeholder="請輸入異動申請單上之所有檔案"></textarea>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label mb-0 fw-bold d-block" id="fileFromLogLabel">程式異動單(Log):</label>
+                        <label class="form-label mb-0" id="fileFromLogCountLabel">檔案數量:</label>
+                        <input type="text" class="form-control d-inline p-0 mb-1 text-center" style="width: 100px;" id="fileFromLogCount" readonly/>
+                        <textarea class="form-control" id="fileFromLog"  rows="10" placeholder="請輸入程式異動單中所有修改的檔案範圍"></textarea>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="col-5">
+                        <label class="form-label mb-0 fw-bold d-block" id="notMatchFromDocLabel">申請單未匹配檔案(可複製並於(1)搜尋單號):</label>
+                        <label class="form-label mb-0" id="notMatchFromDocCountLabel">檔案數量:</label>
+                        <input type="text" class="form-control d-inline p-0 mb-1 text-center" style="width: 100px;" id="notMatchFromDocCount" readonly/>
+                        <textarea class="form-control" id="notMatchFromDoc"  rows="10" placeholder="申請單有但異動單沒有" readonly></textarea>
+                    </div>
+                    <div class="col-5">
+                        <label class="form-label mb-0 fw-bold d-block" id="notMatchFromLogLabel">異動單未匹配檔案(可複製並於(1)搜尋單號):</label>
+                        <label class="form-label mb-0" id="notMatchFromLogCountLabel">檔案數量:</label>
+                        <input type="text" class="form-control d-inline p-0 mb-1 text-center" style="width: 100px;" id="notMatchFromLogCount" readonly/>
+                        <textarea class="form-control" id="notMatchFromLog"  rows="10" placeholder="異動單有但申請單沒有" readonly></textarea>
+                    </div>
                 </div>
             </div>
         </div>
