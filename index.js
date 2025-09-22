@@ -45,57 +45,109 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // -------------------- 檔案統計 --------------------
+    // function calculateFileStats(input, excludeMerge) {
+    //     const allFiles = [];
+    //     const modifiedFiles = [];
+    //     const addedFiles = [];
+    //     const deletedFiles = [];
+
+    //     const lines = input.split("\n");
+    //     let skipFiles = false;
+
+    //     lines.forEach(line => {
+    //         line = line.trim();
+
+    //         if (line.startsWith("Message:")) {
+    //             const msg = line.replace("Message:", "").trim();
+    //             skipFiles = (excludeMerge && msg.startsWith("Merge")) || msg.includes("Working tree changes"); // 排除 Merge 或 Working tree changes
+    //             return;
+    //         }
+
+    //         if (skipFiles) return;
+
+    //         if (line.startsWith("Modified:")) {
+    //             const file = line.replace("Modified:", "").trim();
+    //             if (!file.includes("Working tree changes")) {
+    //                 allFiles.push(file);
+    //                 modifiedFiles.push(file);
+    //             }
+    //         } else if (line.startsWith("Added:")) {
+    //             const file = line.replace("Added:", "").trim();
+    //             if (!file.includes("Working tree changes")) {
+    //                 allFiles.push(file);
+    //                 addedFiles.push(file);
+    //             }
+    //         } else if (line.startsWith("Deleted:")) {
+    //             const file = line.replace("Deleted:", "").trim();
+    //             if (!file.includes("Working tree changes")) {
+    //                 allFiles.push(file);
+    //                 deletedFiles.push(file);
+    //             }
+    //         }
+    //     });
+
+    //     const uniqueAllFiles = [...new Set(allFiles)];
+    //     const uniqueModified = [...new Set(modifiedFiles)];
+    //     const uniqueAdded = [...new Set(addedFiles)];
+    //     const uniqueDeleted = [...new Set(deletedFiles)];
+
+    //     document.getElementById("fileCount").value = uniqueAllFiles.length;
+    //     document.getElementById("modifiedCount").value = uniqueModified.length;
+    //     document.getElementById("addedCount").value = uniqueAdded.length;
+    //     document.getElementById("deletedCount").value = uniqueDeleted.length;
+
+    //     document.getElementById("fileResult").value = uniqueAllFiles.reverse().join("\n");
+    //     document.getElementById("modifiedResult").value = uniqueModified.reverse().join("\n");
+    //     document.getElementById("addedResult").value = uniqueAdded.reverse().join("\n");
+    //     document.getElementById("deletedResult").value = uniqueDeleted.reverse().join("\n");
+    // }
+
     function calculateFileStats(input, excludeMerge) {
         const allFiles = [];
         const modifiedFiles = [];
         const addedFiles = [];
         const deletedFiles = [];
-
-        const lines = input.split("\n");
-        let skipFiles = false;
-
-        lines.forEach(line => {
-            line = line.trim();
-
-            if (line.startsWith("Message:")) {
-                const msg = line.replace("Message:", "").trim();
-                skipFiles = (excludeMerge && msg.startsWith("Merge")) || msg.includes("Working tree changes"); // 排除 Merge 或 Working tree changes
-                return;
-            }
-
-            if (skipFiles) return;
-
-            if (line.startsWith("Modified:")) {
-                const file = line.replace("Modified:", "").trim();
-                if (!file.includes("Working tree changes")) {
+    
+        const commitBlockRegex = /Message:\s*([\s\S]*?)(?=(\nMessage:|\nRevision:|$))/g;
+        let match;
+    
+        while ((match = commitBlockRegex.exec(input)) !== null) {
+            const block = match[0];
+            const messageLine = block.match(/Message:\s*(.*)/)?.[1]?.trim() || "";
+    
+            const isMerge = messageLine.startsWith("Merge") || messageLine.includes("Working tree changes");
+            if (excludeMerge && isMerge) continue;
+    
+            const lines = block.split("\n");
+            lines.forEach(line => {
+                line = line.trim();
+    
+                if (line.startsWith("Modified:")) {
+                    const file = line.replace("Modified:", "").trim();
                     allFiles.push(file);
                     modifiedFiles.push(file);
-                }
-            } else if (line.startsWith("Added:")) {
-                const file = line.replace("Added:", "").trim();
-                if (!file.includes("Working tree changes")) {
+                } else if (line.startsWith("Added:")) {
+                    const file = line.replace("Added:", "").trim();
                     allFiles.push(file);
                     addedFiles.push(file);
-                }
-            } else if (line.startsWith("Deleted:")) {
-                const file = line.replace("Deleted:", "").trim();
-                if (!file.includes("Working tree changes")) {
+                } else if (line.startsWith("Deleted:")) {
+                    const file = line.replace("Deleted:", "").trim();
                     allFiles.push(file);
                     deletedFiles.push(file);
                 }
-            }
-        });
-
+            });
+        }
+    
         const uniqueAllFiles = [...new Set(allFiles)];
         const uniqueModified = [...new Set(modifiedFiles)];
         const uniqueAdded = [...new Set(addedFiles)];
         const uniqueDeleted = [...new Set(deletedFiles)];
-
+    
         document.getElementById("fileCount").value = uniqueAllFiles.length;
         document.getElementById("modifiedCount").value = uniqueModified.length;
         document.getElementById("addedCount").value = uniqueAdded.length;
         document.getElementById("deletedCount").value = uniqueDeleted.length;
-
+    
         document.getElementById("fileResult").value = uniqueAllFiles.reverse().join("\n");
         document.getElementById("modifiedResult").value = uniqueModified.reverse().join("\n");
         document.getElementById("addedResult").value = uniqueAdded.reverse().join("\n");
