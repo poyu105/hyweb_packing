@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // -------------------- 比對 --------------------
-    compareButton.addEventListener("click", function () {
+    /*compareButton.addEventListener("click", function () {
         if (!docIsDeduped) {
             alert("請先點擊排重按鈕，再進行比對!");
             return;
@@ -220,6 +220,47 @@ document.addEventListener("DOMContentLoaded", function () {
             return !docFiles.some(docFile => logFile.endsWith(docFile));
         });
 
+        document.getElementById("notMatchFromDoc").value = docNotInLog.join("\n"); //申請單未匹配檔案
+        document.getElementById("notMatchFromLog").value = logNotInDoc.join("\n"); //異動單未匹配檔案
+        document.getElementById("notMatchFromDocCount").value = docNotInLog.length || 0; //申請單未匹配檔案數量
+        document.getElementById("notMatchFromLogCount").value = logNotInDoc.length || 0; //異動單未匹配檔案數量
+    });*/
+    // -------------------- 比對 --------------------
+    compareButton.addEventListener("click", function () {
+        if (!docIsDeduped) {
+            alert("請先點擊排重按鈕，再進行比對!");
+            return;
+        }
+    
+        const docFiles = document.getElementById("fileFromDoc").value
+            .split("\n")
+            .map(f => f.trim())
+            .filter(f => f.length > 0);
+    
+        const logFilesRaw = document.getElementById("fileFromLog").value
+            .split("\n")
+            .map(f => {
+                // 移除 Git log 中的行號與變更數字部分
+                return f.replace(/\s+\|\s+\d+.*$/, "").trim();
+            })
+            .filter(f => f.length > 0);
+    
+        // 取得異動單中的倒數三層路徑
+        const logFiles = logFilesRaw.map(fullPath => {
+            const parts = fullPath.split("/");
+            // 取最後三層（不足三層就全部取）
+            const lastThree = parts.slice(-3);
+            return lastThree.join("/");
+        });
+    
+        const docNotInLog = docFiles.filter(docFile => {
+            return !logFiles.some(logFile => logFile.endsWith(docFile));
+        });
+    
+        const logNotInDoc = logFiles.filter(logFile => {
+            return !docFiles.some(docFile => logFile.endsWith(docFile));
+        });
+    
         document.getElementById("notMatchFromDoc").value = docNotInLog.join("\n"); //申請單未匹配檔案
         document.getElementById("notMatchFromLog").value = logNotInDoc.join("\n"); //異動單未匹配檔案
         document.getElementById("notMatchFromDocCount").value = docNotInLog.length || 0; //申請單未匹配檔案數量
