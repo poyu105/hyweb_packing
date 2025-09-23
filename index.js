@@ -232,11 +232,19 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
     
-        const docFiles = document.getElementById("fileFromDoc").value
+        // 處理申請單檔案（取倒數 3 層）
+        const docFilesRaw = document.getElementById("fileFromDoc").value
             .split("\n")
             .map(f => f.trim())
             .filter(f => f.length > 0);
     
+        const docFiles = docFilesRaw.map(fullPath => {
+            const parts = fullPath.split("/");
+            const lastThree = parts.slice(-3);
+            return lastThree.join("/");
+        });
+    
+        // 處理異動單檔案（先移除 Git log 格式，再取倒數 3 層）
         const logFilesRaw = document.getElementById("fileFromLog").value
             .split("\n")
             .map(f => {
@@ -245,25 +253,26 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .filter(f => f.length > 0);
     
-        // 取得異動單中的倒數三層路徑
         const logFiles = logFilesRaw.map(fullPath => {
             const parts = fullPath.split("/");
-            // 取最後三層（不足三層就全部取）
             const lastThree = parts.slice(-3);
             return lastThree.join("/");
         });
     
+        // 比對：申請單未匹配到異動單
         const docNotInLog = docFiles.filter(docFile => {
-            return !logFiles.some(logFile => logFile.endsWith(docFile));
+            return !logFiles.includes(docFile);
         });
     
+        // 比對：異動單未匹配到申請單
         const logNotInDoc = logFiles.filter(logFile => {
-            return !docFiles.some(docFile => logFile.endsWith(docFile));
+            return !docFiles.includes(logFile);
         });
     
-        document.getElementById("notMatchFromDoc").value = docNotInLog.join("\n"); //申請單未匹配檔案
-        document.getElementById("notMatchFromLog").value = logNotInDoc.join("\n"); //異動單未匹配檔案
-        document.getElementById("notMatchFromDocCount").value = docNotInLog.length || 0; //申請單未匹配檔案數量
-        document.getElementById("notMatchFromLogCount").value = logNotInDoc.length || 0; //異動單未匹配檔案數量
+        // 輸出結果
+        document.getElementById("notMatchFromDoc").value = docNotInLog.join("\n");
+        document.getElementById("notMatchFromLog").value = logNotInDoc.join("\n");
+        document.getElementById("notMatchFromDocCount").value = docNotInLog.length || 0;
+        document.getElementById("notMatchFromLogCount").value = logNotInDoc.length || 0;
     });
 });
